@@ -1,0 +1,181 @@
+#include <iostream>
+#include <array>
+#include <string>
+#include <math.h>
+using namespace std;
+
+double max(double max_array[], int size);
+double min(double min_array[], int size);
+void simulation();
+void replace_funct(double replace_array[], int size);
+double mean_calc(double mean_array[], int size);
+double pop_standard_dev(double dev_array[], int size, double mean);
+
+
+int main()
+{
+	simulation();
+	
+	return 0;
+}
+
+
+
+void simulation(){
+	
+	double my_array[20];
+	double max_val;
+	double min_val;
+	double mean_val = 0;
+	double stand_dev = 0;
+	string input;
+	double enter;
+	int a =0;	
+	string cont;
+		
+	cin >> input;
+	
+	while (!(input== "d" || input == "done")){
+		cout.precision(5);
+		enter = stod(input);
+		my_array[a] = enter;
+		a++;
+		cin >> input;		
+	}
+	
+	max_val = max(my_array, a);
+	min_val = min(my_array, a);
+	mean_val = mean_calc(my_array, a);
+	stand_dev = pop_standard_dev(my_array, a, mean_val);
+	
+	cout << "Max value is: " << max_val << endl;
+	cout << "Min value is: " << min_val << endl;
+	cout << "Mean value is: " << mean_val << endl;
+	cout << "Standard deviation is: " << stand_dev << endl;
+	
+	
+	while (!(cont == "Q" || cont == "q")){
+		if (cont == "Y" || cont == "y"){
+			replace_funct(my_array, a);	
+		}
+		cout << "Would you like to change any values? Type Y or Q" << endl;
+		cin >> cont;	
+	}
+
+	max_val = max(my_array, a);
+	min_val = min(my_array, a);
+	mean_val = mean_calc(my_array, a);
+	stand_dev = pop_standard_dev(my_array, a, mean_val);
+	
+	cout << "Max value is: " << max_val << endl;
+	cout << "Min value is: " << min_val << endl;
+	cout << "Mean value is: " << mean_val << endl;
+	cout << "Standard deviation is: " << stand_dev << endl;
+	
+	cout << "Sim Finished" << endl;
+	
+}
+
+double pop_standard_dev(double dev_array[], int size, double mean){
+	cout.precision(5);
+	
+	double variance_calc[20];
+	double var;
+	double pop_dev;
+	double holder;
+	double power = 2;
+	
+	for (int i = 0; i < size; i++){
+		holder = (dev_array[i]) - mean;
+		variance_calc[i] = pow(holder,power);		
+	}
+	
+	var = mean_calc(variance_calc,size);
+	
+	pop_dev = sqrt(var);
+	
+	return pop_dev;
+	
+}
+
+void replace_funct(double replace_array[], int size){
+	
+	int placement;
+	int new_val;
+	double max_val, min_val, mean_val, stand_dev;
+	
+	cout << "Location of replacement value?" << endl;
+	cin >> placement;
+	
+	if (placement < 0 && placement > size){
+		cout << "Invalid location, re-enter location" << endl;
+		cin >> placement;
+	}
+	
+	else {
+		cout << "Replacement value?" << endl;
+		cin >> new_val;
+		
+		replace_array[placement] = new_val;
+	}
+	
+	max_val = max(replace_array, size);
+	min_val = min(replace_array, size);
+	mean_val = mean_calc(replace_array, size);
+	stand_dev = pop_standard_dev(replace_array, size, mean_val);
+
+	
+	cout << "Max value is: " << max_val << endl;
+	cout << "Min value is: " << min_val << endl;
+	cout << "Mean value is: " << mean_val << endl;
+	cout << "Standard deviation is: " << stand_dev << endl;
+
+	
+}
+
+double max(double max_array[], int size){
+	cout.precision(5);
+	
+	double max_val = max_array[0];
+	double enter;
+	
+	for (int i = 0; i < size; i++){
+		
+		if (max_array[i] > max_val){
+			max_val = max_array[i];
+		}
+	}
+	
+	return max_val;
+}
+
+
+
+
+double min(double min_array[], int size){
+	cout.precision(5);
+	
+	double min_val = min_array[0];
+	
+	for (int i = 0; i < size; i++){
+		if (min_array[i] < min_val){
+			min_val = min_array[i];
+		}
+	}
+	
+	return min_val;
+	
+}
+
+double mean_calc(double mean_array[], int size){
+	
+	double mean_holder=0;
+	double mean;
+	
+	for (int x=0; x<size; x++){
+		mean_holder += mean_array[x];
+		mean = mean_holder/size;
+	}
+		
+	return mean;
+}
