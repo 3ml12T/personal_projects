@@ -1,0 +1,318 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+using namespace std;
+
+//declaring global variables used for keeping score
+int A_score = 0, A_attempts = 0, A_blocks = 0, A_off_goal = 0, A_yellow_card = 0, A_red_card=0;
+int B_score = 0, B_attempts = 0, B_blocks = 0, B_off_goal = 0, B_yellow_card = 0, B_red_card=0;
+
+//function declaration
+void event_evaluation();
+
+int random_numbers(int, int);
+
+int event_total();
+
+void goal_scoring(int);
+
+int free_kick(int);
+
+int penalty_goal(int);
+
+void foul(int);
+
+void scoreboard() ;
+
+//main function
+int main()
+{
+	srand(time(0)); //srand() called to randomize the game
+
+	int no_of_events = 0; //variable to hold the random number per event
+
+	no_of_events = event_total(); //calls event_total() function and stores the randomly generated number in no_of_events variable
+
+	cout << "There will be " << no_of_events << " events in this match!\n\n"; //prints out how many events will happen in this match
+	
+	for (int a = 0; a < no_of_events; a++){ //running for no_of_events events		
+
+		if (a == no_of_events/2){ //printing scoreboard halfway
+			scoreboard(); //call scoreboard() function to print scoreboard
+		}
+		event_evaluation(); //calls even_evaluation() function to process each event random_num number of times
+	}
+	
+	scoreboard();
+
+	return 0;
+}
+
+//random number generator function
+int random_numbers(int largest_number, int first_number) //takes in the largest number and first random number that can be generated
+{
+	
+	int rand_num = rand() % largest_number + first_number;	
+	
+	return rand_num;
+
+}
+
+//function to generate number of events in the simulation
+int event_total()
+{
+	int event_number;
+	event_number = random_numbers(31, 1);
+	
+	return event_number;	
+}
+
+//function to break down different cases for each event
+void event_evaluation()
+{
+	int team, random_event_num;
+	random_event_num = random_numbers(6, 1);
+	switch (random_event_num){
+		case 1:
+			team = 1;
+			cout << "Team A has the shot\n";
+			goal_scoring(team);
+			break;
+		case 2:
+			team = 2;
+			cout << "Team B has the shot!\n";
+			goal_scoring(team);
+			break;
+		case 3:
+			team = 1;
+			cout << "Team B has committed a foul and Team A has been awarded a free kick!\n";
+			free_kick(team);	
+			foul(team);
+			break;					
+		case 4:
+			team = 2;
+			cout << "Team A has committed a foul and Team B has been awarded a free kick!\n";
+			free_kick(team);
+			foul(team);
+			break;
+		case 5:
+			team = 1;
+			cout << "Team B has committed a foul close to the goal and Team A has been awarded a penalty!\n";
+			penalty_goal(team);
+			foul(team);
+			break;
+		case 6:
+			team = 2;
+			cout << "Team A has committed a foul close to the goal and Team B has been awarded a penalty!\n";
+			penalty_goal(team);
+			foul(team);
+			break;
+	}
+	
+}
+
+//function to process goal scoring (first 2 cases of even_evaluation() function)
+void goal_scoring(int group_scoring)
+{
+	int goal_rand_num = 0; //variable to store the random number generated for goal scoring
+	goal_rand_num = random_numbers(5, 0);
+	
+	switch (goal_rand_num) {
+		case 0:
+			if (group_scoring ==1){
+				A_score ++;
+				A_attempts ++;
+			}
+			else if (group_scoring == 2) {
+				B_score ++;
+				B_attempts ++;
+			}
+			cout << " A point has been scored!\n"; 
+			break;
+		case 1:
+			cout << "The shot was saved by the goalkeeper!\n";
+			if (group_scoring ==1){
+				B_blocks ++;
+				A_attempts ++;
+			}
+			else if (group_scoring == 2) {
+				A_blocks ++;
+				B_attempts ++;
+			}
+			break;
+		case 2:
+			cout << "The shot missed the goal!\n";
+			if (group_scoring ==1){
+				A_off_goal ++;
+				A_attempts ++;
+			}
+			else if (group_scoring == 2) {
+				B_off_goal ++;
+				B_attempts ++;
+			}
+			break;
+		case 3:
+			cout << "The shot was blocked by an opposing team member!\n";
+			if (group_scoring ==1){
+				B_blocks ++;
+				A_attempts ++;
+			}
+			else if (group_scoring == 2) {
+				A_blocks ++;
+				B_attempts ++;
+			}
+			break;
+	}
+}
+
+//processes the third and fourth cases of the event_evaluation() function
+int free_kick(int group_free_kick)
+{
+	int kick_rand_num = 0;
+	kick_rand_num = random_numbers(5, 0);
+	
+	switch (kick_rand_num) {
+		case 0:
+			if (group_free_kick ==	1){
+				A_attempts ++;
+				A_score ++;
+			}
+			else if (group_free_kick == 2) {
+				B_attempts ++;
+				B_score ++;
+			}
+			cout << "A point has been scored!\n"; 
+			break;
+		case 1:
+			cout << "The shot was saved by the goalkeeper!\n";
+			if (group_free_kick ==	1){
+				A_attempts ++;
+				B_blocks ++;
+			}
+			else if (group_free_kick == 2) {
+				B_attempts ++;
+				A_blocks ++;
+			}
+			break;
+		case 2:
+			cout << "The shot missed the goal!\n";
+			if (group_free_kick ==	1){
+				A_attempts ++;
+				A_off_goal ++;
+			}
+			else if (group_free_kick == 2) {
+				B_attempts ++;
+				B_off_goal ++;
+			}
+			break;
+		case 3:
+			cout << "The shot was blocked by an opposing team member!\n";
+			if (group_free_kick ==1){
+				A_attempts ++;
+				B_blocks ++;
+			}
+			else if (group_free_kick == 2) {
+				B_attempts ++;
+				A_blocks ++;
+			}
+			break;
+	}
+	
+	return kick_rand_num;
+	
+}
+
+//function to determine penalties
+int penalty_goal(int group_penalty)
+{
+	int penalty_rand_num = 0;
+	penalty_rand_num = random_numbers(3, 0);
+	
+	switch (penalty_rand_num){
+		case 0:
+			if (group_penalty == 1) {
+				A_attempts ++;
+				A_score ++;
+			}
+			else if (group_penalty == 2){
+				B_attempts ++;
+				B_score ++;
+			}
+			cout << "A point has been scored!\n"; 
+			break;
+		case 1:
+			cout << "The shot was saved by the goalkeeper!\n";
+			if (group_penalty == 1) {
+				A_attempts ++;
+				B_blocks ++;
+			}
+			else if (group_penalty == 2){
+				B_attempts ++;
+				A_blocks ++;
+			}
+			break;
+		case 2:
+			cout << "The shot missed the goal!\n";
+			if (group_penalty == 1) {
+				A_attempts ++;
+				A_off_goal ++;
+			}
+			else if (group_penalty == 2){
+				B_attempts ++;
+				B_off_goal ++;
+			}
+			break;
+	}
+	
+	return penalty_rand_num;	
+}
+
+//functions to determine fouls and handing out of yellow/red cards
+void foul(int group_foul)
+{
+	int foul_rand_num = 0;
+	
+	foul_rand_num = random_numbers(3, 0);
+	
+	switch (foul_rand_num){
+		case 0:
+			cout << "No card was given\n";
+			break;
+		case 1:
+			cout << "A yellow card was given!\n";
+			if (group_foul ==1){
+				A_yellow_card ++;
+			}
+			else if (group_foul == 2) {
+				B_yellow_card ++;
+			}
+			break;
+		case 2:
+			cout << "A red card was given!\n";
+			if (group_foul ==	1){
+				A_red_card ++;
+			}
+			else if (group_foul == 2) {
+				B_red_card ++;
+			}
+			break;
+		
+	}
+}
+
+//function to format and print scoreboard
+void scoreboard() 
+{
+	cout << "\n\n\n";
+	cout << "\t\t\t\t\t\t\t\t" << "SCOREBOARD\n";
+	cout << "Team A" << "\t\t\t\t\t\t" << "Stats" << "\t\t\t\t\t\t\t" << "Team B\n";
+	cout << A_score << "\t\t\t\t\t\t" << "Current Score" << "\t\t\t\t\t\t" << B_score << endl;
+	cout << A_attempts << "\t\t\t\t\t\t" << "Attempts" << "\t\t\t\t\t\t" << B_attempts << endl;
+	cout << A_off_goal << "\t\t\t\t\t\t" << "Off-goal shots" << "\t\t\t\t\t\t" << B_off_goal << endl;
+	cout << A_blocks << "\t\t\t\t\t\t" << "Blocks" << "\t\t\t\t\t\t\t" << B_blocks << endl;
+	cout << A_yellow_card << "\t\t\t\t\t\t" << "Yellow Cards" << "\t\t\t\t\t\t" << B_yellow_card << endl;
+	cout << A_red_card << "\t\t\t\t\t\t" << "Red Cards" << "\t\t\t\t\t\t" << B_red_card << endl;
+	cout << "\n\n\n";
+		
+}
